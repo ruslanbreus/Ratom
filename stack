@@ -1,0 +1,118 @@
+#include <iostream>
+#include <assert.h>
+#include <fstream>
+#include <locale.h>
+#include <typeinfo>
+
+using namespace std;
+const size_t capacity = 10 ;
+typedef int value_type ;
+
+#define assert_ok(str)   				\
+        dump(str);						\
+        assert(!"Object is OK");
+
+/// КАК ПИСАТЬ ТЕСТЫ ДЛЯ ФУНКЦИЙ КОТОРЫЕ НЕ ВОЗВРАЩАЮТ ЗНАЧЕНИЙ?
+#define TEST(condition) \
+    if ( !( condition)) \
+    cout << "Test FAILED:" #condition << endl ;
+
+class stack
+{
+private :
+    value_type date_[capacity] ;
+    size_t amount ; // количество элементов в стеке
+
+public :
+    stack ()
+    {
+        cout << "begin - variable is created " << endl ;
+        amount = 0 ;
+    }
+   ~stack ()
+   {
+       cout << "end - variable is destroyed ." << endl ;
+   }
+void pop()  // удаляет элемент
+    {
+        ASSERT_pop();
+        date_[amount-1] = -37 ;
+        --amount ;
+    }
+void push( value_type element) // вставляет элемент
+    {
+        ASSERT_push();
+        if (amount == 0 )
+        {
+            date_[amount] = element ;
+            ++amount ;
+        } else
+        {
+            date_[amount] = element ;
+            ++amount ;
+        }
+    }
+int top()   // показывает первый элемент
+    {
+        if (amount == 0 )
+        {
+            cout << "mustm't use top - empty stack" << endl ;
+            assert(!(amount == 0)) ; //return 0;
+        } else
+        return date_[amount - 1] ;
+    }
+int quantity() // кол во элементов
+    {
+        return amount;
+    }
+
+void ASSERT_pop()
+    {
+        ofstream  dump_pop ;
+        dump_pop.open("dump_pop.txt", ios_base :: app);
+        if (amount == 0)
+        {
+            dump_pop << "размер стека 0, меньше нельзя. pop нельзя использовать" << endl;
+            dump_pop.close();
+            cout<<"mustn't use pop, amount = 0" << endl;
+            assert(0);
+        } else
+        {
+            dump_pop << "OK" << endl;
+            dump_pop.close() ;
+        }
+    }
+void ASSERT_push()
+{
+    ofstream dump_push ;
+    dump_push.open("dump_push.txt", ios_base :: app);
+    if (amount > capacity )
+    {
+        dump_push << "выход за границу стека" << endl ;
+        dump_push.close();
+        cout << "amoint > capacity, выход за границу стека" << endl ;
+        assert(0);
+    } else
+    {
+      dump_push << "OK" << endl ;
+      dump_push.close() ;
+    }
+}
+
+};
+
+
+
+int main()
+{
+    setlocale(LC_ALL , "RUS");
+    stack a;
+    int b = 4 ;  double c = 5.6 ;
+
+a.push(c);
+
+    //std::cout  << (typeid(b) != typeid(c)) << std::endl;
+    //if (typeid.name(b) == "int") cout<<"ok" << endl ;
+
+    return 0;
+}
